@@ -1,0 +1,48 @@
+definitions:
+  steps:
+    - step: &install_dependencies
+        name: Install dependencies
+        image: lorisleiva/laravel-docker:8.2
+        script:
+          - composer install --no-interaction --no-progress --optimize-autoloader --no-dev
+          - npm ci
+          - npm run build
+        artifacts:
+          - vendor/**
+          - public/**
+
+    - step: &compress_deployment_artifacts
+        name: Compress deployment artifacts
+        image: atlassian/default-image:4
+        script:
+          - |
+            tar --create --gzip \
+              --exclude="bootstrap/cache/*" \
+              --exclude="node_modules" \
+              --exclude="public/storage" \
+              --exclude="storage" \
+              --exclude="tests" \
+              --file artifacts.tar.gz * .bitbucket/deployment
+        artifacts:
+          - artifacts.tar.gz
+
+    - step: &deploy_production
+        name: Deploy production
+        image: atlassian/default-image:4
+        clone:
+          enabled: false
+        script:
+          - base_directory="~/project"
+          - ssh_user="user"
+          - ssh_host="127.0.0.1"
+          - ssh_port=22
+          - php_executable="php"
+          - tar -xf artifacts.tar.gz .bitbucket/deployment/prepare.sh -O | bash -se -- "$base_directory" "$ssh_user" "$ssh_host" "$ssh_port" "$php_executable"
+
+
+pipelines:
+  branches:
+    master:
+      - step: *install_dependencies
+      - step: *compress_deployment_artifacts
+      - step: *deploy_production

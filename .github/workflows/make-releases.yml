@@ -1,0 +1,33 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  release:
+    runs-on: "ubuntu-24.04"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Make releases
+        run: |
+          echo "Making a release for GitHub"
+          php bin/make-releases.php "github"
+          php bin/post-release.php "github" "${{ secrets.POST_RELEASE_SECRET }}"
+          
+          echo ""
+          echo "Making a release for GitLab"
+          php bin/make-releases.php "gitlab"
+          php bin/post-release.php "gitlab" "${{ secrets.POST_RELEASE_SECRET }}"
+          
+          echo ""
+          echo "Making a release for Bitbucket"
+          php bin/make-releases.php "bitbucket"
+          php bin/post-release.php "bitbucket" "${{ secrets.POST_RELEASE_SECRET }}"
