@@ -7,39 +7,39 @@ ssh_known_hosts=$6
 php_executable=$7
 
 if [[ -z "$ssh_user" ]]; then
-    echo "{STYLE_ERROR}The variable \"\$ssh_user\" is not set.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$ssh_user\" is not set.{STYLE_RESET}"
 
     exit 1
 fi
 
 if [[ -z "$ssh_host" ]]; then
-    echo "{STYLE_ERROR}The variable \"\$ssh_host\" is not set.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$ssh_host\" is not set.{STYLE_RESET}"
 
     exit 1
 fi
 
 if [[ -z "$ssh_port" ]]; then
-    echo "{STYLE_ERROR}The variable \"\$ssh_port\" is not set.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$ssh_port\" is not set.{STYLE_RESET}"
 
     exit 1
 fi
 
 if [[ -z "$private_ssh_key" ]]; then
-    echo "{STYLE_ERROR}The variable \"\$private_ssh_key\" is not set. Add this value as a secret to your {PLATFORM} repository.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$private_ssh_key\" is not set. Add this value as a secret to your {PLATFORM} repository.{STYLE_RESET}"
 
     exit 1
 elif [[ "$private_ssh_key" =~ ^ssh-rsa[[:blank:]] ]] || [[ "$private_ssh_key" =~ [[:blank:]]PUBLIC[[:blank:]]KEY ]]; then
-    echo "{STYLE_ERROR}The variable \"\$private_ssh_key\" looks like a public key. It should be a private key.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$private_ssh_key\" looks like a public key. It should be a private key.{STYLE_RESET}"
 
     exit 1
 fi
 
 if [[ -z "$base_directory" ]]; then
-    echo "{STYLE_ERROR}The variable \"\$base_directory\" is not set.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$base_directory\" is not set.{STYLE_RESET}"
 
     exit 1
 elif [[ "$base_directory" =~ /current/?$ ]]; then
-    echo "{STYLE_ERROR}The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher, to the base directory.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher, to the base directory.{STYLE_RESET}"
 
     exit 1
 fi
@@ -65,7 +65,7 @@ elif [[ -n "$ssh_known_hosts" ]]; then
 
     chmod 644 ~/.ssh/known_hosts
 else
-    echo "{STYLE_WARNING}The variable \"\$ssh_known_hosts\" is not set. We will connect to the remote server without verifying the host.{STYLE_RESET}"
+    echo -e "{STYLE_WARNING}The variable \"\$ssh_known_hosts\" is not set. We will connect to the remote server without verifying the host.{STYLE_RESET}"
 
     # Disable host key verification.
     echo "StrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config >/dev/null

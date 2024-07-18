@@ -84,20 +84,20 @@ mkdir -p "$releases_directory"
 # inside "$releases_directory" does not have a numeric name then we are probably in the wrong place.
 for release_directory_path in "$releases_directory/"*/ ; do
     if [[ -e "$release_directory_path" ]] && ! [[ $release_directory_path =~ /[0-9]+/$ ]] ; then
-       echo "{STYLE_ERROR}The name of existing release directory \"$release_directory_path\" is not fully numeric, this should never happen.{STYLE_RESET}"
+       echo -e "{STYLE_ERROR}The name of existing release directory \"$release_directory_path\" is not fully numeric, this should never happen.{STYLE_RESET}"
 
        exit 1
     fi
 done
 
 if [[ -d "$lock_directory_path" ]]; then
-    echo "{STYLE_ERROR}The directory \"$lock_directory_path\" exists, this means another deployment is currently running.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The directory \"$lock_directory_path\" exists, this means another deployment is currently running.{STYLE_RESET}"
 
     exit 1
 fi
 
 if [[ ! -x "$(command -v "$php_executable")" ]]; then
-    echo "{STYLE_ERROR}The PHP executable is set to \"$php_executable\", but that file either does not exist or is not executable.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The PHP executable is set to \"$php_executable\", but that file either does not exist or is not executable.{STYLE_RESET}"
 
     exit 1
 elif [[ "$php_executable" != "php" ]]; then
@@ -134,7 +134,7 @@ ln -nsfr "$real_storage_directory_path" "$new_release_directory/storage"
 if [[ ! -s "$real_env_file_path" ]]; then
     touch "$real_env_file_path"
 
-    echo "{STYLE_ERROR}Your \"$real_env_file_path\" file is empty. Run the deployment again after you've filled it in.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}Your \"$real_env_file_path\" file is empty. Run the deployment again after you've filled it in.{STYLE_RESET}"
 
     exit 1
 fi
@@ -150,7 +150,7 @@ cd "$new_release_directory" || exit 1
 tar --extract --file="$artifacts_path"
 
 if ! [[ $("$php_executable" artisan tinker --help) =~ "--execute" ]]; then
-    echo "{STYLE_ERROR}Laravel Tinker is not installed or you are using an outdated version. Laravel Tinker version ^2.0 is required.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}Laravel Tinker is not installed or you are using an outdated version. Laravel Tinker version ^2.0 is required.{STYLE_RESET}"
 
     exit 1
 fi

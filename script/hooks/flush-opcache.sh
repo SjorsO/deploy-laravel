@@ -27,7 +27,7 @@ on_exit() {
     fi
 
     if [[ "$has_flushed_opcache" == false ]]; then
-        echo "{STYLE_ERROR}Failed to flush OPCache. The APP_URL in your .env file is set to \"$app_url\", is this correct?{STYLE_RESET}"
+        echo -e "{STYLE_ERROR}Failed to flush OPCache. The APP_URL in your .env file is set to \"$app_url\", is this correct?{STYLE_RESET}"
     fi
 
     # Exit this trap with the original status code.

@@ -9,9 +9,9 @@ on_exit() {
     script_status_code=$?
 
     if [[ "$script_status_code" -ne 0 ]]; then
-        echo "{STYLE_WARNING}For more information about file permissions, please visit: https://sjorso.com/laravel-file-permissions{STYLE_RESET}"
+        echo -e "{STYLE_WARNING}For more information about file permissions, please visit: https://sjorso.com/laravel-file-permissions{STYLE_RESET}"
 
-        echo "{STYLE_WARNING}Setting file permissions is optional. You can choose to skip it but then you might run into file permission errors in the future. You can disable this hook by commenting out the \"set-file-permissions.sh\" hook in \"deploy.sh\"{STYLE_RESET}"
+        echo -e "{STYLE_WARNING}Setting file permissions is optional. You can choose to skip it but then you might run into file permission errors in the future. You can disable this hook by commenting out the \"set-file-permissions.sh\" hook in \"deploy.sh\"{STYLE_RESET}"
     fi
 
     # Exit this trap with the original status code.
@@ -26,7 +26,7 @@ deployment_user=$(whoami)
 http_user=$(ps axo comm,user | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | sort | awk '{print $NF}' | uniq | head -n1)
 
 if [[ -z "$http_user" ]]; then
-    echo "{STYLE_ERROR}Could not detect which user serves web requests. You must manually set the \"\$http_user\" variable in the \"set-file-permissions\" hook.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}Could not detect which user serves web requests. You must manually set the \"\$http_user\" variable in the \"set-file-permissions\" hook.{STYLE_RESET}"
 
     exit 1
 fi
@@ -40,7 +40,7 @@ if [[ "$deployment_user" == "$http_user" ]]; then
 fi
 
 if [[ -z "$(command -v "setfacl")" ]]; then
-    echo "{STYLE_ERROR}We need \"setfacl\" to properly set file permissions, but it is not installed. You can install it using \"sudo apt install acl\".{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}We need \"setfacl\" to properly set file permissions, but it is not installed. You can install it using \"sudo apt install acl\".{STYLE_RESET}"
 
     exit 1
 fi
@@ -48,13 +48,13 @@ fi
 http_user_group=$(id -Gn "$http_user")
 
 if [[ $(wc -w <<< "$http_user_group") != "1" ]]; then
-    echo "{STYLE_ERROR}Can not set file permissions. The \"$http_user\" user belongs to multiple groups, we can't decide which group we should use. You must manually set the \"\$http_user_group\" variable in the \"set-file-permissions\" hook. User \"$http_user\" belongs to these groups: $http_user_group{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}Can not set file permissions. The \"$http_user\" user belongs to multiple groups, we can't decide which group we should use. You must manually set the \"\$http_user_group\" variable in the \"set-file-permissions\" hook. User \"$http_user\" belongs to these groups: $http_user_group{STYLE_RESET}"
 
     exit 1
 fi
 
 if ! id -nG "$deployment_user" | grep -q "\b$http_user_group\b"; then
-    echo "{STYLE_ERROR}Can not set file permissions. The \"$deployment_user\" user should be in the \"$http_user_group\" group. You can do this using \"sudo usermod -aG $http_user_group $deployment_user\".{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}Can not set file permissions. The \"$deployment_user\" user should be in the \"$http_user_group\" group. You can do this using \"sudo usermod -aG $http_user_group $deployment_user\".{STYLE_RESET}"
 
     exit 1
 fi
@@ -63,7 +63,7 @@ filesystems_config_permission_1=$("$php_executable" artisan tinker --execute "ec
 filesystems_config_permission_2=$("$php_executable" artisan tinker --execute "echo decoct(config('filesystems.disks.public.permissions.dir.public'))")
 
 if [[ "$filesystems_config_permission_1" != "775" ]] || [[ "$filesystems_config_permission_2" != "775" ]]; then
-    echo "{STYLE_ERROR}You must set the default directory permissions to 0775 in your \"filesystems.php\" config file. This must be done for both the \"local\" disk and the \"public\" disk. With the current setting you will get file permission errors. Make sure you set them to 0775, not 775.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}You must set the default directory permissions to 0775 in your \"filesystems.php\" config file. This must be done for both the \"local\" disk and the \"public\" disk. With the current setting you will get file permission errors. Make sure you set them to 0775, not 775.{STYLE_RESET}"
 
     exit 1
 fi
