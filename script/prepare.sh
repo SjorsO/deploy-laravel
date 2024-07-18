@@ -82,7 +82,7 @@ remote_artifacts_path="/tmp/deployment-artifacts-$(head -c 512 /dev/urandom | tr
 
 echo "Uploading artifacts to the remote server."
 
-scp -P "$ssh_port" "artifacts.tar.gz" "$ssh_user@$ssh_host:$remote_artifacts_path"
+scp -P "$ssh_port" "artifacts.tar.gz" "$ssh_user@[$ssh_host]:$remote_artifacts_path"
 
 echo "Running the deployment script on the remote server."
 
