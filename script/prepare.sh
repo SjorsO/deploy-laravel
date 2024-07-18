@@ -68,10 +68,10 @@ else
     echo -e "{STYLE_WARNING}The variable \"\$ssh_known_hosts\" is not set. We will connect to the remote server without verifying the host.{STYLE_RESET}"
 
     # Disable host key verification.
-    echo "StrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config >/dev/null
+    echo "StrictHostKeyChecking no" | {SUDO}tee -a /etc/ssh/ssh_config >/dev/null
 
     # Prevent related warnings.
-    echo "LogLevel ERROR" | sudo tee -a /etc/ssh/ssh_config >/dev/null
+    echo "LogLevel ERROR" | {SUDO}tee -a /etc/ssh/ssh_config >/dev/null
 fi
 
 # Start the SSH agent.
