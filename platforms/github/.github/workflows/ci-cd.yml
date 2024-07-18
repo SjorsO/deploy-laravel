@@ -8,7 +8,7 @@ jobs:
     runs-on: "ubuntu-22.04"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -17,14 +17,14 @@ jobs:
           coverage: none
 
       - name: Use Composer dependencies cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Use npm dependencies cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
@@ -47,7 +47,7 @@ jobs:
             --file ~/artifacts.tar.gz * .github/deployment
 
       - name: Upload deployment artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: deployment-artifacts
           path: ~/artifacts.tar.gz
@@ -59,7 +59,7 @@ jobs:
     runs-on: "ubuntu-22.04"
     steps:
       - name: Download deployment artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: deployment-artifacts
 
