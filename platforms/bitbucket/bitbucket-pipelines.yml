@@ -42,7 +42,7 @@ definitions:
 
 pipelines:
   branches:
-    master:
+    main:
       - step: *install_dependencies
       - step: *compress_deployment_artifacts
       - step: *deploy_production
