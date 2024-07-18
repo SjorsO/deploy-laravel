@@ -2,7 +2,10 @@ php_executable=$1
 base_directory=$2
 artifacts_path=$3
 
-"$php_executable" artisan schedule:interrupt
+# Available since Laravel 10
+if [[ $("$php_executable" artisan list) =~ "schedule:interrupt" ]]; then
+    "$php_executable" artisan schedule:interrupt
+fi
 
 "$php_executable" artisan queue:restart
 

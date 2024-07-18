@@ -1,6 +1,6 @@
-# We flush OPCache by calling the "opcache_reset()" php function. We do this by using Curl to send a
-# web request to the server. We can't call this function on the command line, this would flush the
-# cli cache, not the web cache. Calling "opcache_reset()" is the most efficient way to flush OPCache.
+# This hook flushes OPCache by calling the "opcache_reset()" php function. This function has to be
+# called in a web request to flush the web cache. If we call this function on the command line instead,
+# then it would only flush the cli cache.
 
 php_executable=$1
 current_release_directory_path=$2

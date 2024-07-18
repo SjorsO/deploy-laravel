@@ -55,7 +55,10 @@ fi
 
 echo "Preparing to connect to the remote server."
 
-if [[ -n "$ssh_known_hosts" ]]; then
+if [[ "$ssh_known_hosts" == "n/a" ]]; then
+    # When using Bitbucket setting the known hosts is skipped. Bitbucket adds them automatically.
+    :
+elif [[ -n "$ssh_known_hosts" ]]; then
     mkdir -p ~/.ssh
 
     echo "$ssh_known_hosts" > ~/.ssh/known_hosts
@@ -74,8 +77,11 @@ fi
 # Start the SSH agent.
 eval "$(ssh-agent)" >/dev/null
 
-# Add our key to the SSH agent.
-echo "$private_ssh_key" | tr -d "\r" | ssh-add -q - 2>/dev/null
+# When using Bitbucket we can skip adding the ssh key. Bitbucket adds it automatically.
+if [[ "$private_ssh_key" != "n/a" ]]; then
+    # Add our key to the SSH agent.
+    echo "$private_ssh_key" | tr -d "\r" | ssh-add -q - 2>/dev/null
+fi
 
 # Generate a unique file name for the deployment artifacts.
 remote_artifacts_path="/tmp/deployment-artifacts-$(head -c 512 /dev/urandom | tr -dc 0-9a-f | head -c 8)"

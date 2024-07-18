@@ -37,7 +37,7 @@ definitions:
           - ssh_host="127.0.0.1"
           - ssh_port=22
           - php_executable="php"
-          - tar -xf artifacts.tar.gz .bitbucket/deployment/prepare.sh -O | bash -se -- "$base_directory" "$ssh_user" "$ssh_host" "$ssh_port" "$php_executable"
+          - tar -xf artifacts.tar.gz .bitbucket/deployment/prepare.sh -O | bash -se -- "$base_directory" "$ssh_user" "$ssh_host" "$ssh_port" "n/a" "n/a" "$php_executable"
 
 
 pipelines:

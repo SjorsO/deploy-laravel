@@ -2,7 +2,7 @@ artifacts_path=$1
 base_directory=$2
 php_executable=$3
 
-# If the "$base_directory" starts with a "~", replace it with the path to the home directory.
+# Replace the tilde with the path to the home directory.
 if [[ "$base_directory" =~ ^~ ]]; then
     base_directory="$HOME${base_directory:1}"
 fi
@@ -11,8 +11,8 @@ releases_directory="$base_directory/releases"
 current_directory_path="$base_directory/current"
 lock_directory_path="$base_directory/deployment-currently-running"
 
-# If this project has an existing deployment done by Deployer, then we change our defaults to match
-# those of Deployer. This way we don't have to make any changes when migrating to this script.
+# If this project was previously deployed with Deployer then the storage directory and .env file are
+# in the "shared" directory.
 if [[ -d "$base_directory/shared/storage" ]] && [[ -f "$base_directory/shared/.env" ]]; then
     real_storage_directory_path="$base_directory/shared/storage"
     real_env_file_path="$base_directory/shared/.env"
@@ -27,9 +27,9 @@ release_directory_created=false
 release_activated=false
 use_datetime_release_directory_name=false
 
-# By default we use an incrementing id for release directory names. If the existing release directory
-# has a datetime name, then we also use a datetime name. This keeps release directory names consistent
-# when migrating from Laravel Envoyer.
+# By default we use an incrementing id for release directory names. Laravel Envoyer uses datetime names
+# instead. If we detect that Envoyer was previously used to deploy this project then we will also use
+# datetime names to keep things consistent.
 if [[ -h "$current_directory_path" ]] && [[ "$(realpath "$current_directory_path")" =~ /20[0-9]{12}$ ]]; then
     use_datetime_release_directory_name=true
 fi
@@ -80,9 +80,8 @@ mkdir -p "$releases_directory"
 # Here we check if the "$releases_directory" is set correctly. Later on in the script we delete old
 # release directories. We don't want to risk deleting something important.
 #
-# Most deployment scripts, including this one, use numeric names for release directories. If any
-# directory inside "$releases_directory" does not have a numeric name, we are probably in the wrong
-# place.
+# Most deployment scripts including this one use numeric names for release directories. If any directories
+# inside "$releases_directory" does not have a numeric name then we are probably in the wrong place.
 for release_directory_path in "$releases_directory/"*/ ; do
     if [[ -e "$release_directory_path" ]] && ! [[ $release_directory_path =~ /[0-9]+/$ ]] ; then
        echo "{STYLE_ERROR}The name of existing release directory \"$release_directory_path\" is not fully numeric, this should never happen.{STYLE_RESET}"
@@ -98,7 +97,7 @@ if [[ -d "$lock_directory_path" ]]; then
 fi
 
 if [[ ! -x "$(command -v "$php_executable")" ]]; then
-    echo "{STYLE_ERROR}The PHP executable is set to \"$php_executable\", but that file either does not exist, or is not executable.{STYLE_RESET}"
+    echo "{STYLE_ERROR}The PHP executable is set to \"$php_executable\", but that file either does not exist or is not executable.{STYLE_RESET}"
 
     exit 1
 elif [[ "$php_executable" != "php" ]]; then
@@ -151,7 +150,7 @@ cd "$new_release_directory" || exit 1
 tar --extract --file="$artifacts_path"
 
 if ! [[ $("$php_executable" artisan tinker --help) =~ "--execute" ]]; then
-    echo "{STYLE_ERROR}Laravel Tinker is not installed, or you are using an outdated version. Laravel Tinker version ^2.0 is required.{STYLE_RESET}"
+    echo "{STYLE_ERROR}Laravel Tinker is not installed or you are using an outdated version. Laravel Tinker version ^2.0 is required.{STYLE_RESET}"
 
     exit 1
 fi
