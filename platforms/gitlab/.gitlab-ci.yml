@@ -20,7 +20,7 @@ build:
   stage: build
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-  image: lorisleiva/laravel-docker:8.2
+  image: lorisleiva/laravel-docker:8.3
   script:
     - *install_dependencies
     - *compress_deployment_artifacts
@@ -35,7 +35,7 @@ deploy_main:
     - build
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-  image: lorisleiva/laravel-docker:8.2
+  image: lorisleiva/laravel-docker:8.3
   variables: {
     base_directory: "~/project",
     ssh_user: "user",

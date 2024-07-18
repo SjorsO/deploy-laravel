@@ -13,7 +13,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2"
+          php-version: "8.3"
           coverage: none
 
       - name: Use Composer dependencies cache
@@ -69,7 +69,7 @@ jobs:
           ssh_user: "user"
           ssh_host: "127.0.0.1"
           ssh_port: 22
-          private_ssh_key: "${{ secrets.SSH_KEY }}"
+          private_ssh_key: "${{ secrets.PRIVATE_SSH_KEY }}"
           ssh_known_hosts: "${{ secrets.SSH_KNOWN_HOSTS }}"
           php_executable: "php"
         run: tar -xf artifacts.tar.gz .github/deployment/prepare.sh -O | bash -se -- "$base_directory" "$ssh_user" "$ssh_host" "$ssh_port" "$private_ssh_key" "$ssh_known_hosts" "$php_executable"
