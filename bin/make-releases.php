@@ -24,11 +24,13 @@ if (is_dir($buildDirectory)) {
 
 mkdir("$buildDirectory", recursive: true);
 
-$scriptDestinationDirectory = match ($platform) {
-    'github' => "$buildDirectory/.github/deployment",
-    'gitlab' => "$buildDirectory/.gitlab/deployment",
-    'bitbucket' => "$buildDirectory/.bitbucket/deployment",
+$relativeScriptDestinationDirectory = match ($platform) {
+    'github' => '.github/deployment',
+    'gitlab' => '.gitlab/deployment',
+    'bitbucket' => '.bitbucket/deployment',
 };
+
+$scriptDestinationDirectory = "$buildDirectory/$relativeScriptDestinationDirectory";
 
 mkdir($scriptDestinationDirectory, recursive: true);
 
@@ -70,6 +72,7 @@ foreach ($files as $file) {
     $contents = file_get_contents($filePath);
 
     $contents = str_replace('{PLATFORM}', $prettyPlatformName, $contents);
+    $contents = str_replace('{SCRIPTS_DIR}', $relativeScriptDestinationDirectory, $contents);
     $contents = str_replace('{STYLE_ERROR}', $styleError, $contents);
     $contents = str_replace('{STYLE_WARNING}', $styleWarning, $contents);
     $contents = str_replace('{STYLE_RESET}', $styleReset, $contents);

@@ -40,7 +40,7 @@ run_hook () {
     hook_entry_directory=$(pwd)
 
     # Run the hook, and pass down every argument except the first one (the first one is the name of the hook).
-    tar -xf "$artifacts_path" ".github/deployment/hooks/$hook_file_name" -O | bash -se -- "$php_executable" "${hook_parameters[@]}"
+    tar -xf "$artifacts_path" "{SCRIPTS_DIR}/hooks/$hook_file_name" -O | bash -se -- "$php_executable" "${hook_parameters[@]}"
 
     # Make sure the hook didn't change the directory.
     cd "$hook_entry_directory" || exit 1
