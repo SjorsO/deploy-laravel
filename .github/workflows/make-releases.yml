@@ -19,15 +19,20 @@ jobs:
       - name: Make releases
         run: |
           echo "Making a release for GitHub"
-          php bin/make-releases.php "github"
-          php bin/post-release.php "github" "${{ secrets.POST_RELEASE_SECRET }}"
+          php bin/make-releases.php "github"          
           
           echo ""
           echo "Making a release for GitLab"
-          php bin/make-releases.php "gitlab"
-          php bin/post-release.php "gitlab" "${{ secrets.POST_RELEASE_SECRET }}"
+          php bin/make-releases.php "gitlab"          
           
           echo ""
           echo "Making a release for Bitbucket"
           php bin/make-releases.php "bitbucket"
+          
+          echo ""
+          echo "Posting GitHub release to sjorso.com"
+          php bin/post-release.php "github" "${{ secrets.POST_RELEASE_SECRET }}"
+          echo "Posting GitLab release to sjorso.com"
+          php bin/post-release.php "gitlab" "${{ secrets.POST_RELEASE_SECRET }}"
+          echo "Posting Bitbucket release to sjorso.com"
           php bin/post-release.php "bitbucket" "${{ secrets.POST_RELEASE_SECRET }}"
