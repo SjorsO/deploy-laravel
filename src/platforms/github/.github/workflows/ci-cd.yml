@@ -1,0 +1,75 @@
+name: CI/CD
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: "ubuntu-22.04"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Use Composer dependencies cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Use npm dependencies cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --no-progress --optimize-autoloader --no-dev
+          npm ci
+          npm run build
+
+      - name: Compress deployment artifacts
+        run: |
+          tar --create --gzip \
+            --exclude="bootstrap/cache/*" \
+            --exclude="node_modules" \
+            --exclude="public/storage" \
+            --exclude="storage" \
+            --exclude="tests" \
+            --file ~/artifacts.tar.gz * .github/deployment
+
+      - name: Upload deployment artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-artifacts
+          path: ~/artifacts.tar.gz
+          retention-days: 1
+
+  deploy-main:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: "ubuntu-22.04"
+    steps:
+      - name: Download deployment artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-artifacts
+
+      - name: Deploy
+        env:
+          base_directory: "~/project"
+          ssh_user: "user"
+          ssh_host: "127.0.0.1"
+          ssh_port: 22
+          private_ssh_key: "${{ secrets.PRIVATE_SSH_KEY }}"
+          ssh_known_hosts: "${{ secrets.SSH_KNOWN_HOSTS }}"
+          php_executable: "php"
+        run: tar -xf artifacts.tar.gz .github/deployment/prepare.sh -O | bash -se -- "$base_directory" "$ssh_user" "$ssh_host" "$ssh_port" "$private_ssh_key" "$ssh_known_hosts" "$php_executable"

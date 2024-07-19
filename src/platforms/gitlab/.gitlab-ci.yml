@@ -1,0 +1,49 @@
+stages:
+  - build
+  - deploy_main
+
+.install_dependencies: &install_dependencies |
+  composer install --no-interaction --no-progress --optimize-autoloader --no-dev
+  npm ci
+  npm run build
+
+.compress_deployment_artifacts: &compress_deployment_artifacts |
+  tar --create --gzip \
+    --exclude="bootstrap/cache/*" \
+    --exclude="node_modules" \
+    --exclude="public/storage" \
+    --exclude="storage" \
+    --exclude="tests" \
+    --file artifacts.tar.gz * .gitlab/deployment
+
+build:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  image: lorisleiva/laravel-docker:8.3
+  script:
+    - *install_dependencies
+    - *compress_deployment_artifacts
+  artifacts:
+    paths:
+      - artifacts.tar.gz
+    expire_in: 8 hours
+
+deploy_main:
+  stage: deploy_main
+  dependencies:
+    - build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  image: lorisleiva/laravel-docker:8.3
+  variables: {
+    base_directory: "~/project",
+    ssh_user: "user",
+    ssh_host: "127.0.0.1",
+    ssh_port: 22,
+    private_ssh_key: "$PRIVATE_SSH_KEY",
+    ssh_known_hosts: "$SSH_KNOWN_HOSTS",
+    php_executable: "php",
+  }
+  script:
+    - tar -xf artifacts.tar.gz .gitlab/deployment/prepare.sh -O | bash -se -- "$base_directory" "$ssh_user" "$ssh_host" "$ssh_port" "$private_ssh_key" "$ssh_known_hosts" "$php_executable"

@@ -15,12 +15,12 @@ if (! in_array($platform, ['github', 'gitlab', 'bitbucket'])) {
     exit(1);
 }
 
-$baseDirectory = dirname(__FILE__, 2);
+$baseDirectory = dirname(__FILE__, 3);
 
 $releaseFilePath = match ($platform) {
-    'github' => "$baseDirectory/releases/deploy-laravel-for-github-actions.zip",
-    'gitlab' => "$baseDirectory/releases/deploy-laravel-for-gitlab-ci-cd.zip",
-    'bitbucket' => "$baseDirectory/releases/deploy-laravel-for-bitbucket-pipelines.zip",
+    'github' => "$baseDirectory/release-zips/deploy-laravel-for-github-actions.zip",
+    'gitlab' => "$baseDirectory/release-zips/deploy-laravel-for-gitlab-ci-cd.zip",
+    'bitbucket' => "$baseDirectory/release-zips/deploy-laravel-for-bitbucket-pipelines.zip",
 };
 
 if (! is_file($releaseFilePath)) {

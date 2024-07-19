@@ -14,15 +14,13 @@ if (! in_array($platform, ['github', 'gitlab', 'bitbucket'])) {
     exit(1);
 }
 
-$baseDirectory = dirname(__FILE__, 2);
+$baseDirectory = dirname(__FILE__, 3);
 
-$buildDirectory = "$baseDirectory/releases/build";
+$buildDirectory = "$baseDirectory/build";
 
 if (is_dir($buildDirectory)) {
     shell_exec('rm -rf '.escapeshellarg($buildDirectory));
 }
-
-mkdir("$buildDirectory", recursive: true);
 
 $relativeScriptDestinationDirectory = match ($platform) {
     'github' => '.github/deployment',
@@ -36,13 +34,13 @@ mkdir($scriptDestinationDirectory, recursive: true);
 
 shell_exec(sprintf(
     'cp -r %s %s',
-    escapeshellarg("$baseDirectory/platforms/$platform/."),
+    escapeshellarg("$baseDirectory/src/platforms/$platform/."),
     escapeshellarg($buildDirectory),
 ));
 
 shell_exec(sprintf(
     'cp -r %s %s',
-    escapeshellarg("$baseDirectory/script/."),
+    escapeshellarg("$baseDirectory/src/script/."),
     escapeshellarg($scriptDestinationDirectory),
 ));
 
@@ -81,6 +79,18 @@ foreach ($files as $file) {
 
     $filePath = $file->getPathname();
 
+    if (in_array($file->getFilename(), ['.gitkeep', '.DS_Store'])) {
+        unlink($filePath);
+
+        continue;
+    }
+
+    if (! str_ends_with($file->getFilename(), '.yml') && ! str_ends_with($file->getFilename(), '.sh')) {
+        echo "Unexpected file extension: $filePath\n";
+
+        exit(1);
+    }
+
     $filePaths[] = $filePath;
 
     $contents = file_get_contents($filePath);
@@ -100,10 +110,14 @@ foreach ($files as $file) {
 $hash = sha1($hash);
 
 $outputFilePath = match ($platform) {
-    'github' => "$baseDirectory/releases/deploy-laravel-for-github-actions.zip",
-    'gitlab' => "$baseDirectory/releases/deploy-laravel-for-gitlab-ci-cd.zip",
-    'bitbucket' => "$baseDirectory/releases/deploy-laravel-for-bitbucket-pipelines.zip",
+    'github' => "$baseDirectory/release-zips/deploy-laravel-for-github-actions.zip",
+    'gitlab' => "$baseDirectory/release-zips/deploy-laravel-for-gitlab-ci-cd.zip",
+    'bitbucket' => "$baseDirectory/release-zips/deploy-laravel-for-bitbucket-pipelines.zip",
 };
+
+if (! is_dir(dirname($outputFilePath))) {
+    mkdir(dirname($outputFilePath));
+}
 
 if (is_file($outputFilePath)) {
     unlink($outputFilePath);
@@ -122,5 +136,17 @@ $zipOutput = shell_exec(sprintf(
 file_put_contents("$outputFilePath.hash", $hash);
 
 echo $zipOutput;
+
+$releaseDirectory = "$baseDirectory/releases/$platform";
+
+if (is_dir($releaseDirectory)) {
+    shell_exec('rm -rf '.escapeshellarg($releaseDirectory));
+}
+
+if (! is_dir(dirname($releaseDirectory))) {
+    mkdir(dirname($releaseDirectory));
+}
+
+rename($buildDirectory, $releaseDirectory);
 
 shell_exec('rm -rf '.escapeshellarg($buildDirectory));
