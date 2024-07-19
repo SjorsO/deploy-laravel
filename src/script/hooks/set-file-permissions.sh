@@ -11,7 +11,7 @@ on_exit() {
     if [[ "$script_status_code" -ne 0 ]]; then
         echo -e "{STYLE_WARNING}For more information about file permissions, please visit: https://sjorso.com/laravel-file-permissions{STYLE_RESET}"
 
-        echo -e "{STYLE_WARNING}Setting file permissions is optional. You can choose to skip it but then you might run into file permission errors in the future. You can disable this hook by commenting out the \"set-file-permissions.sh\" hook in \"deploy.sh\"{STYLE_RESET}"
+        echo -e "{STYLE_WARNING}Setting file permissions is optional. You can disable this hook by commenting out the \"set-file-permissions.sh\" hook in \"deploy.sh\". However, if you disable this hook you might run into file permission errors in the future.{STYLE_RESET}"
     fi
 
     # Exit this trap with the original status code.
