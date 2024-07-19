@@ -19,11 +19,11 @@ jobs:
       - name: Make releases
         run: |
           echo "Making a release for GitHub"
-          php src/bin/make-release.php "github"          
+          php src/bin/make-release.php "github"
           
           echo ""
           echo "Making a release for GitLab"
-          php src/bin/make-release.php "gitlab"          
+          php src/bin/make-release.php "gitlab"
           
           echo ""
           echo "Making a release for Bitbucket"
