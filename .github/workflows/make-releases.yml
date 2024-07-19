@@ -36,3 +36,11 @@ jobs:
           php src/bin/post-release.php "gitlab" "${{ secrets.POST_RELEASE_SECRET }}"
           echo "Posting Bitbucket release to sjorso.com"
           php src/bin/post-release.php "bitbucket" "${{ secrets.POST_RELEASE_SECRET }}"
+
+      - name: Commit releases
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: '.' # git add .
+          message: 'Update releases'
+          push: true
+          default_author: github_actor

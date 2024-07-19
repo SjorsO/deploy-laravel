@@ -39,7 +39,7 @@ if [[ -z "$base_directory" ]]; then
 
     exit 1
 elif [[ "$base_directory" =~ /current/?$ ]]; then
-    echo -e "{STYLE_ERROR}The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher, to the base directory.{STYLE_RESET}"
+    echo -e "{STYLE_ERROR}The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher to the base directory.{STYLE_RESET}"
 
     exit 1
 fi
