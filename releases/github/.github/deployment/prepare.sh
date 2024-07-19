@@ -39,7 +39,7 @@ if [[ -z "$base_directory" ]]; then
 
     exit 1
 elif [[ "$base_directory" =~ /current/?$ ]]; then
-    echo -e "::error::The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher, to the base directory."
+    echo -e "::error::The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher to the base directory."
 
     exit 1
 fi

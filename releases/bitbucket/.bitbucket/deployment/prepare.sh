@@ -39,7 +39,7 @@ if [[ -z "$base_directory" ]]; then
 
     exit 1
 elif [[ "$base_directory" =~ /current/?$ ]]; then
-    echo -e "\e[101mError\e[0m\e[91m The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher, to the base directory.\e[0m"
+    echo -e "\e[101mError\e[0m\e[91m The variable \"\$base_directory\" points to the \"current\" directory. It should point one level higher to the base directory.\e[0m"
 
     exit 1
 fi
