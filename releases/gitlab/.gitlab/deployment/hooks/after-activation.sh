@@ -12,3 +12,7 @@ fi
 if [[ $("$php_executable" artisan list) =~ "horizon:terminate" ]]; then
     "$php_executable" artisan horizon:terminate
 fi
+
+if [[ $("$php_executable" artisan list) =~ "pulse:restart" ]]; then
+    "$php_executable" artisan pulse:restart
+fi
