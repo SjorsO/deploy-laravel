@@ -58,8 +58,8 @@ Nginx/Apache2 is serving your application from the "current" directory.
 This directory is a symlink to the latest release directory.
 This deployment script creates a new release directory for each deployment, but it does not change the symlink until that release is completely ready.
 
-This means that a running deployment does not affect your current application at all, because everything happens in a new release directory.
-Even if a step in the deployment script fails, the new release will simply get deleted and your application keeps running like before.
+Using a new release directory for each deployment means that a running deployment does not affect your current application at all.
+Even if a step in the deployment script fails, the new release directory will simply get deleted and your application keeps running like before.
 
 Once the new release is completely ready the new release is [symlinked to the "current" directory](https://github.com/SjorsO/deploy-laravel/blob/fd6ddaf5a6562db60c4c1711c66ef76e142213df/src/script/deploy.sh#L166-L169).
 Changing the symlink is instant, also causing no downtime for your users.
