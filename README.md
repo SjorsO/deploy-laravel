@@ -63,3 +63,28 @@ Even if a step in the deployment script fails, the new release directory will si
 
 Once the new release is completely ready the new release is [symlinked to the "current" directory](https://github.com/SjorsO/deploy-laravel/blob/fd6ddaf5a6562db60c4c1711c66ef76e142213df/src/script/deploy.sh#L166-L169).
 Changing the symlink is instant, also causing no downtime for your users.
+
+
+## ⚠️ Using SQLite? Read this first
+
+If your application uses **SQLite**, be aware that it stores the entire database as a **single file** (e.g., `database.sqlite`). During zero-downtime deployments, this file **must be placed in a shared directory** to avoid data loss between releases.
+
+If `database.sqlite` is kept inside the release folder (like `current/database/database.sqlite`), it will be **overwritten on each deploy**, resulting in **loss of all data** and **empty tables** after migrations.
+
+###  What to do
+
+1. **Create a shared database file:**
+For example, place it in the root of your project path (it must be shared between releases ):
+
+```bash
+touch database.sqlite
+```
+2. **Update your `.env` to use the shared path**
+
+```
+DB_CONNECTION=sqlite
+DB_DATABASE=/path/to/your/project/database.sqlite
+```
+ > Replace /path/to/your/project with your actual path. Avoid using relative paths like database/database.sqlite as they will be copied with every release.
+
+
