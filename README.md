@@ -1,14 +1,16 @@
 # Deploy Laravel
 Production-ready zero-downtime deployment script for Laravel.
 
+Also check out [Lit](https://github.com/SjorsO/lit) for deployments from the CLI.
+
 ## Install
-Visit the link below for the download and the installation guide:
+Visit the links below for the download and the installation guide:
 - [Deploy Laravel for GitHub Actions](https://sjorso.com/deploy-laravel/github/step-1)
 - [Deploy Laravel for GitLab CI/CD](https://sjorso.com/deploy-laravel/gitlab/step-1)
 - [Deploy Laravel for Bitbucket Pipelines](https://sjorso.com/deploy-laravel/bitbucket/step-1)
 
 Requirements:
-- Laravel 5 or higher
+- Laravel 5 up to 12
 - Ubuntu 16.04 or higher / CentOS7 or higher
 
 Installing this deployment script can typically be done in less than 10 minutes.
@@ -34,7 +36,7 @@ A quick overview:
 
 ## Zero-downtime deployments (current & releases directory)
 This deployment script is zero-downtime, this has two big advantages: deployments don't cause downtime for your users, and deployments are gracefully aborted when something goes wrong.
-To understand what exactly this means, lets first look at what it means if your deployments are not zero-downtime.
+To understand what exactly this means, let's first look at what it means if your deployments are not zero-downtime.
 
 A typical not zero-downtime deployment strategy is SSHing into your server, calling `git clone`, and then running `composer install`.
 While these commands are running your application is in limbo: some code is new, some code is old, and some new dependencies are missing entirely.
