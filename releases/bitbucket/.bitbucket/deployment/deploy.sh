@@ -126,7 +126,7 @@ release_directory_created=true
 echo "Creating a symlink to the storage directory."
 
 if [[ ! -d "$real_storage_directory_path" ]]; then
-    mkdir -p "$real_storage_directory_path/"{app/public,framework/{cache/data,sessions,testing,views},logs};
+    mkdir -p "$real_storage_directory_path/"{app/{private,public},framework/{cache/data,sessions,testing,views},logs};
 fi
 
 ln -nsfr "$real_storage_directory_path" "$new_release_directory/storage"
