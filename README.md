@@ -1,3 +1,5 @@
+![Laravel deployment with GitHub Actions](.github/assets/github-deployment.gif)
+
 # Deploy Laravel
 Production-ready zero-downtime deployment script for Laravel.
 
