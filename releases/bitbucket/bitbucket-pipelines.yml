@@ -2,7 +2,7 @@ definitions:
   steps:
     - step: &install_dependencies
         name: Install dependencies
-        image: lorisleiva/laravel-docker:8.3
+        image: lorisleiva/laravel-docker:8.4
         script:
           - composer install --no-interaction --no-progress --optimize-autoloader --no-dev
           - npm ci
