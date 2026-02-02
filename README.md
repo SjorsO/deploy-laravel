@@ -3,7 +3,7 @@
 # Deploy Laravel
 Production-ready zero-downtime deployment script for Laravel.
 
-Also check out [Lit](https://github.com/SjorsO/lit) for deployments from the CLI.
+Also check out [Lit](https://github.com/SjorsO/lit) for deployments from the command line.
 
 ## Install
 Visit the links below for the download and the installation guide:
